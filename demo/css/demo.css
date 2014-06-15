@@ -1,0 +1,20 @@
+html, body {
+	height: 100%;
+	position: relative;
+	margin: 0px;
+	padding: 0px;
+	overflow: scroll;
+}
+
+.container {
+	height: 100%;
+	width: 100%;
+	overflow: scroll;
+}
+
+#d_root {
+	height: 100%;
+	width: 100%;
+	overflow: scroll;
+	position: relative;
+}

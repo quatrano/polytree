@@ -1,0 +1,17 @@
+{
+	"name": "Polytree_TodoMVC",
+	"version": "0.1.0",
+	"author" : "quatrano",
+	"description" : "Polytree.js • TodoMVC",
+	"private": true,
+	"scripts": {
+		"start": "node server.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/quatrano/polytree"
+	},
+	"dependencies": {
+		"express": "3.3.5"
+	}
+}
