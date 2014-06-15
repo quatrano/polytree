@@ -1,4 +1,4 @@
-demo
+Polytree.js • TodoMVC
 =========
 
 install dependencies
