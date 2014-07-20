@@ -1,15 +1,5 @@
-Polytree.js • TodoMVC
-=========
+Welcome!  
 
-install dependencies
----------
-* install node.js globally - download from http://nodejs.org/download/
-* from the base directory run 'npm install'
+**Polytree** is an innovative, intuitive paradigm for building web applications.  The paradigm is based on the data-driven approach made popular by [D3](http://d3js.org/), but introduces a macro-structure making it appropriate for building entire web applications.
 
-start the server
----------
-* from the base directory run 'npm start'
-
-stop the server
----------
-* press 'CTRL + c' to stop the server
+check out [the wiki](https://github.com/quatrano/polytree/wiki)!
