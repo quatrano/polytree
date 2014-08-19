@@ -3,11 +3,12 @@
  */
 
 requirejs.config({
-    baseUrl: '/com/lib',
-    paths: {
-        com: '../js',
-        polytree: '../../polytree',
-    },
+	paths: {
+		polytree: '../../polytree',
+		underscore: '../lib/underscore',
+		jquery: '../lib/jquery',
+		d3: '../lib/d3'
+	},
     shim: {
     	underscore: {
       		exports: '_'
@@ -1340,40 +1341,6 @@ requirejs(['underscore', 'polytree/ctx'],
 					}
 				},
 				{
-					id: 'goHome',
-					tag: 'div',
-					parent: 'whiteBackground',
-					style: {
-						enter: {
-							instant: {
-								'position': 'absolute',
-								'background-color': 'white',
-								'width': 0,
-								'right': ['mn', 'whiteBackgroundStyle', 'width'],
-								'height': ['mn', 'doubleGutterPx'],
-							},
-							transition: {
-								'width': ['mn', 'gutterPx'],
-							}
-						},
-						update: {
-							transition: {
-								'width': ['mn', 'gutterPx'],
-								'right': ['mn', 'whiteBackgroundStyle', 'width'],
-								'height': ['mn', 'doubleGutterPx'],
-							}
-						},
-						exit: {
-							transition: {
-								'width': 0,
-							}
-						}
-					},
-					delay: {
-						enter: 700
-					},
-				},
-				{
 					id: 'container',
 					tag: 'div',
 					parent: 'ready',
@@ -1457,10 +1424,48 @@ requirejs(['underscore', 'polytree/ctx'],
 						}
 					},
 					duration: {
-						exit: 100
+						exit: 10
 					},
 					delay: {
 						enter: 800
+					},
+				},
+				{
+					id: 'goHome',
+					tag: 'div',
+					parent: 'goHomeLink',
+					style: {
+						enter: {
+							instant: {
+								'position': 'absolute',
+								'top': 0,
+								'left': ['mn', 'gutterPx'],
+								'background-color': 'rgba(255,255,255,0.8)',
+								'height': ['mn', 'doubleGutterPx'],
+								'width': '0px',
+								'z-index': '-1',
+							},
+							transition: {
+								'left': '0px',
+								'width': ['mn', 'gutterPx'],
+							}
+						},
+						update: {
+							transition: {
+								'left': '0px',
+								'width': ['mn', 'gutterPx'],
+								'height': ['mn', 'doubleGutterPx'],
+							}
+						},
+						exit: {
+							transition: {
+								'left': ['mn', 'gutterPx'],
+								'width': 0,
+							}
+						}
+					},
+					delay: {
+						enter: 500
 					},
 				},
 				{
@@ -1478,7 +1483,6 @@ requirejs(['underscore', 'polytree/ctx'],
 						enter: {
 							instant: {
 								'color': ['pn', 'color'],
-								'line-height': '0.9em',
 								'opacity': 0,
 								'font-size': ['mn', 'scaledFontSizePx', 'h2'],
 							},
@@ -1494,7 +1498,7 @@ requirejs(['underscore', 'polytree/ctx'],
 						}
 					},
 					delay: {
-						enter: 1000
+						enter: 1200
 					},
 				},
 				{
@@ -1646,13 +1650,11 @@ requirejs(['underscore', 'polytree/ctx'],
 					style: {
 						enter: {
 							instant: {
-								// 'display': 'inline-block',
 								'color': 'white',
 								'text-decoration': 'none',
 								'text-transform': 'uppercase',
 								'padding': ['mn', 'scaledPaddingPx', 'h2'],
 								'font-size': ['mn', 'scaledFontSizePx', 'h2'],
-								// 'border-width': ['mn', 'scaledBorderWidthPx'],
 								'font-family': ['pn', 'sansFontStack'],
 							}
 						},
@@ -1660,8 +1662,6 @@ requirejs(['underscore', 'polytree/ctx'],
 							transition: {
 								'padding': ['mn', 'scaledPaddingPx', 'h2'],
 								'font-size': ['mn', 'scaledFontSizePx', 'h2'],
-								// 'border-width': ['mn', 'scaledBorderWidthPx'],
-								// 'font-family': ['pn', 'sansFontStack'],
 							}
 						}
 					},
