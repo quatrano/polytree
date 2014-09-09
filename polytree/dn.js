@@ -549,7 +549,16 @@ define(['jquery', 'underscore', 'd3'],
 
 					_.each(dn.selections, function (selection) {
 						var enter = selection.enter().append(function (d, i) {
-							var element = document.createElement(d.tag);
+							if (d.tag === 'svg') {
+								// TODO: handle all name spaces
+								var element = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+							} else if (d.tag === 'path') {
+								var element = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+							} else {
+								var element = document.createElement(d.tag);
+							}
+// TODO: prevent a duplicate element from entering briefly when the element exits
+// console.log('entering ' + d.id);
 							element.id = d.id;
 							element.setAttribute('kind', d.kind);
 							return element;

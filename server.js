@@ -1,5 +1,6 @@
 /**
- * TodoMVC server
+ * Node Server
+ * simulate the gh-pages server
  */
 
 // require
@@ -12,24 +13,21 @@ app.configure(function() {
 	app.use(app.router);
 });
 
-// ===== redirect =====
+// ===== index =====
 app.get('/', function (req, res, next) {
-	res.redirect('/demo');
-});
-
-// ===== demo =====
-app.get('/demo', function (req, res, next) {
-	var path = __dirname + '/demo/html/index.html';
-	res.sendfile(path);
-});
-app.get('/demo/:dir/:file', function (req, res, next) {
-	var path = __dirname + '/demo/' + req.params.dir + '/' + req.params.file;
+	var path = __dirname + '/index.html';
 	res.sendfile(path);
 });
 
 // ===== polytree =====
 app.get('/polytree/:file', function (req, res, next) {
 	var path = __dirname + '/polytree/' + req.params.file;
+	res.sendfile(path);
+});
+
+// ===== com =====
+app.get('/com/:dir/:file', function (req, res, next) {
+	var path = __dirname + '/com/' + req.params.dir + '/' + req.params.file;
 	res.sendfile(path);
 });
 

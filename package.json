@@ -1,8 +1,8 @@
 {
-	"name": "Polytree_TodoMVC",
+	"name": "polytree",
 	"version": "0.1.0",
 	"author" : "quatrano",
-	"description" : "Polytree.js • TodoMVC",
+	"description" : "polytree",
 	"private": true,
 	"scripts": {
 		"start": "node server.js"
