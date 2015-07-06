@@ -145,6 +145,12 @@ requirejs(['underscore', 'polytree/Context'],
             window.location.hash = hash;
           }
         },
+        {
+          id: 'log',
+          fn: function () {
+            console.log(arguments);
+          }
+        }
       ],
       /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
        * TRANSFORMATIONS
@@ -1796,7 +1802,18 @@ requirejs(['underscore', 'polytree/Context'],
                 'padding': ['d', 'overviewTextStyle', ['index', 'overviewText'], 'padding'],
               }
             }
-          }
+          },
+          // Testing issues #14 and #15
+          //handle: {
+          //  enter: {
+          //    instant: {
+          //      always: [{
+          //        method: 'log',
+          //        arguments: [[['#']], 'testing issue ']
+          //      }]
+          //    }
+          //  }
+          //}
         },
         {
           id: 'examples',

@@ -424,6 +424,8 @@ define(['jquery', 'underscore', 'd3'],
               } else if (value[0][0] == 'id') {
                 // get the conditional id 
                 var result = v.idLookup[instanceId][value[0][1]];
+              } else if (value[0][0] == '#') {
+                var result = instanceId;
               }
             }
             
@@ -634,8 +636,7 @@ define(['jquery', 'underscore', 'd3'],
               var handle = temporalData[phase][subphase][cc.DN_HANDLE];
               if (handle) {
                 _.each(handle, function (methods, eventType) {
-                  var namespacedType = eventType + '.' + ctx.prefix;
-                  node.on(namespacedType, function (d) {
+                  var fn = function (d) {
                     _.each(methods, function (method, methodIndex) {
                       var evaluatedArgs = [];
                       _.each(method[cc.DN_H_ARGS], function (arg) {
@@ -644,7 +645,14 @@ define(['jquery', 'underscore', 'd3'],
                       });
                       ctx.execute(method[cc.DN_H_METHOD], evaluatedArgs);
                     });
-                  }, false); // todo: capture: method[cc.DN_H_CAPTURE]
+                  };
+
+                  if (eventType == 'always') {
+                    node.each(fn);
+                  } else {
+                    var namespacedType = eventType + '.' + ctx.prefix;
+                    node.on(namespacedType, fn, false); // todo: capture: method[cc.DN_H_CAPTURE]
+                  }
                 });
               }
 
