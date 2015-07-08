@@ -131,11 +131,13 @@ define(['jquery', 'underscore', 'd3'],
           var v = this;
           var ctx = v.ctx;
           var instanceChildData = [];
-          _.each(v.children, function (childId) {
-            Array.prototype.push.apply(instanceChildData, ctx.v.lookup(childId).getData(instanceId));
-          });
-          v.select(instanceId);
-          v.join(instanceId, instanceChildData);
+          if (v.children.length) { // TODO: this could probably move up the call stack
+            _.each(v.children, function (childId) {
+              Array.prototype.push.apply(instanceChildData, ctx.v.lookup(childId).getData(instanceId));
+            });
+            v.select(instanceId);
+            v.join(instanceId, instanceChildData);
+          }
         },
         getData : function (parentInstanceId) {
            var v = this;
