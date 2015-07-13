@@ -145,17 +145,27 @@ proto : {
     }
   },
 
-  setState : function (id, value) {
+  // set the value of an input node
+  // if no options object is passed, do not digest
+  setState : function (id, value, options) {
     var ctx = this;
     var cc = ctx.configConstants;
     var obj = [];
     obj[cc.PN_ID] = id;
     obj[cc.PN_VALUE] = value;
     ctx.i.configureOrCreate(obj);
+    if (options && !options.silent) {
+      this.digest();
+    }
   },
 
   digest : function () {
     this.d.recalculate();
+    this.v.refresh();
+  },
+
+  render : function () {
+    // refresh the view nodes whose dependencies have changed
     this.v.refresh();
   },
 
@@ -168,20 +178,13 @@ proto : {
     }
   },
 
-  run : function (id, arguments) {
+  // execute a method
+  // if no options object is passed, do digest
+  execute : function (id, arguments, options) {
     this.p.execute(id, arguments);
-  },
-
-  render : function () {
-    // recalculate the medial nodes whose dependencies have changed
-    this.d.recalculate();
-    // refresh the distal nodes whose dependencies have changed
-    this.v.refresh();
-  },
-
-  execute : function (id, arguments) {
-    this.p.execute(id, arguments);
-    this.digest();
+    if (!options || !options.silent) {
+      this.digest();
+    }
   },
 
   dispatch : function (event) {

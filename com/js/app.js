@@ -43,18 +43,18 @@ requirejs(['underscore', 'polytree/Context'],
 
             // measure height and width now and on resize
             window.onresize = function () {
-              ctx.run('measureDimensions')
+              ctx.execute('measureDimensions');
             };
             $(window).trigger('resize');
 
             // capture location now and on hash change
             window.onhashchange = function () {
-              ctx.run('captureHash')
-            }
+              ctx.execute('captureHash');
+            };
             $(window).trigger('hashchange');
 
             // load the application
-            ctx.run('loadApplication');
+            ctx.execute('loadApplication');
           }
         },
         {
@@ -77,7 +77,7 @@ requirejs(['underscore', 'polytree/Context'],
               }).fail(function (f) {
                 console.log('error');
               }).always(function () {
-                ctx.run('donePreLoading');
+                ctx.execute('donePreLoading');
               });
               // .promise().then(function (data) {
               //   console.log(data);
@@ -118,7 +118,7 @@ requirejs(['underscore', 'polytree/Context'],
               height: $rootNode.innerHeight(),
               width: $rootNode.innerWidth()
             });  
-            ctx.run('waitRender', [600, 'resize']);
+            ctx.execute('waitRender', [600, 'resize']);
           }
         },
         {
@@ -376,7 +376,7 @@ requirejs(['underscore', 'polytree/Context'],
                 state = 'examples';
               } else {
                 // invalid hash
-                ctx.run('setHash', ['']);
+                ctx.execute('setHash', ['']);
               }
             }
             return state;
