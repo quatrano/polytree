@@ -74,8 +74,8 @@ proto : {
 
   recalculate : function () {
     var collection = this;
-    collection.sortNodeSet('nodesToRecalculate');
     while (this.nodesToRecalculate.length > 0) {
+      collection.sortNodeSet('nodesToRecalculate');
       var nodeId = this.nodesToRecalculate.shift();
       var node = this.lookup(nodeId);
       node.recalculate();
