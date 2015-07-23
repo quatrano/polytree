@@ -76,7 +76,7 @@ proto : {
     var collection = this;
     while (this.nodesToRecalculate.length > 0) {
       collection.sortNodeSet('nodesToRecalculate');
-      this.nodesToRecalculate = _.uniq(this.nodesToRecalculate, true);
+      collection.deDupeSortedNodeSet('nodesToRecalculate');
       var nodeId = this.nodesToRecalculate.shift();
       var node = this.lookup(nodeId);
       node.recalculate();
@@ -92,6 +92,18 @@ proto : {
         return -1;
       }
     });
+  },
+
+  deDupeSortedNodeSet : function (nodeSetName) {
+    var i = 1;
+    var nodeSet = this[nodeSetName];
+    while (i < nodeSet.length) {
+      if (nodeSet[i - 1] === nodeSet[i]) {
+        nodeSet.splice(i, 1);
+      } else {
+        i++;
+      }
+    }
   }
 }
 
