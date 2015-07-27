@@ -29,14 +29,31 @@ define(['jquery', 'underscore', 'd3'],
           selections: {
             value: {}
           },
+
+          // map of parentInstanceId to an array of instanceIds
           instanceCache: {
             value: false,
             writable: true,
             configurable: true
           },
+
+          // map of childInstanceId to dereferenced data for child instances
+          childInstanceData: {
+            value: {},
+            writable: true
+          },
+
+          // for fixed nodes: map of parentInstanceId to instanceId
+          // for conditional nodes: map of parentInstanceId to map of conditionalId to instanceId
           instanceLookup: {
             value: {}
           },
+
+          // array of exiting instanceIds
+          exitingInstanceIds: {
+            value: []
+          },
+
           parentInstanceLookup: {
             value: {}
           },
@@ -100,12 +117,13 @@ define(['jquery', 'underscore', 'd3'],
           var ctx = v.ctx;
           v.joinAll();
           v.update();
-           if (v.instancesChanged || v.childInstancesChanged()) {
+          if (v.instancesChanged || v.childInstancesChanged()) {
             v.enter();
             ctx.v.refreshAll(_.clone(v.children));
             v.exit();
             v.instancesChanged = false;
-            v.removeNonexistentInstances();
+            v.clearExitedInstanceData();
+            v.clearExitedChildInstanceData();
           }
           v.order();
         },
@@ -133,7 +151,10 @@ define(['jquery', 'underscore', 'd3'],
           var instanceChildData = [];
           if (v.children.length) { // TODO: this could probably move up the call stack
             _.each(v.children, function (childId) {
-              Array.prototype.push.apply(instanceChildData, ctx.v.lookup(childId).getData(instanceId));
+              var data = ctx.v.lookup(childId).getData(instanceId);
+              if (data) {
+                Array.prototype.push.apply(instanceChildData, data);
+              }
             });
             v.select(instanceId);
             v.join(instanceId, instanceChildData);
@@ -145,7 +166,7 @@ define(['jquery', 'underscore', 'd3'],
            if (!v.instanceCache) {
              // the instance cache was invalidated, recalculate
              v.reinstantiate();
-            v.refreshInstanceCache();
+             v.refreshInstanceCache();
            }
            return v.instanceCache[parentInstanceId];
          },
@@ -156,15 +177,15 @@ define(['jquery', 'underscore', 'd3'],
         },
         join : function (instanceId, data) {
           this.selections[instanceId] = this.selections[instanceId]
-            .data(data, function(d) {
-              return d.id;
+            .data(data, function (d) {
+              return d;
             });
         },
-         hardRefresh : function (parentInstanceId) {
-           // render self - this is a special function for the root node because it has no parents :(
-           var v = this;
-           var ctx = v.ctx;
-           var cc = ctx.configConstants;
+        hardRefresh : function (parentInstanceId) {
+          // render self - this is a special function for the root node because it has no parents :(
+          var v = this;
+          var ctx = v.ctx;
+          var cc = ctx.configConstants;
           var instanceId = ctx.v.uid;
 
           v.instanceLookup[parentInstanceId] = instanceId;
@@ -172,21 +193,21 @@ define(['jquery', 'underscore', 'd3'],
           v.indexLookup[instanceId] = {};
           v.parentInstanceLookup[instanceId] = parentInstanceId;
           var instanceTemporalData = v.extendTemporalData(true, instanceId, [], v.staticAttributes, v.dynamicAttributes);
-           var instanceData = {
-             tag: v.tag,
-             id: instanceId,
-             kind: v.id,
-             index: 0,
-             temporalData: instanceTemporalData
-           };
-           var parentSelector = '#' + parentInstanceId;
+          v.childInstanceData[instanceId] = {
+            tag: v.tag,
+            id: instanceId,
+            kind: v.id,
+            index: 0,
+            temporalData: instanceTemporalData
+          };
+          var parentSelector = '#' + parentInstanceId;
           var rootSelector = parentSelector + '>*';
 
           var selection = d3.select(parentSelector).selectAll(rootSelector);
-          selection = selection.data([instanceData]);
+          selection = selection.data([instanceId]);
           var enter = selection.enter().append(function (d, i) {
-            var element = document.createElement(d.tag);
-            element.id = d.id;
+            var element = document.createElement(v.tag);
+            element.id = instanceId;
             return element;
           });
           enter = v.instant(enter, cc.DN_ENTER);
@@ -194,14 +215,12 @@ define(['jquery', 'underscore', 'd3'],
           var update = selection;
           update = v.instant(update, cc.DN_UPDATE);
           update = v.transition(update, cc.DN_UPDATE);
-          
-           ctx.v.refreshAll([v.id]);
-         },
+          ctx.v.refreshAll([v.id]);
+        },
         reinstantiate : function () {
           var v = this;
           
           var conditionalInstancesChanged = false;
-          var parentInstancesChanged = false;
 
           // check if parent instances have changed
           var parentInstances = this.getParentInstances();
@@ -329,13 +348,9 @@ define(['jquery', 'underscore', 'd3'],
           v.indexLookup[instanceId] = instanceIndexLookup;
         },
         removeInstance : function (instanceId, parentInstanceId, conditionalId) {
-          // remove instance from:
-            // instance lookup
-            // parent instance lookup
-            // id lookup
-            // index lookup
+          // remove instanceId from the instanceLookup,
+            // and add it to exitingInstanceIds for cleanup later
           var v = this;
-          var ctx = v.ctx;
 
           // conditional
           if (typeof(conditionalId) != 'undefined') {
@@ -344,20 +359,33 @@ define(['jquery', 'underscore', 'd3'],
           } else {
             delete v.instanceLookup[parentInstanceId];
           }
-          // common
-          delete v.idLookup[instanceId];
-          delete v.indexLookup[instanceId];
-          delete v.parentInstanceLookup[instanceId];
+          v.exitingInstanceIds.push(instanceId);
         },
-        removeNonexistentInstances : function () {
-          // remove non-existent instances from:
+        clearExitedInstanceData : function () {
+          // remove data from exited instances
             // selections
             // instance cache
+            // instance lookup
+            // parent instance lookup
+            // id lookup
+            // index lookup
           var v = this;
-          _.each(v.instanceCache, function (data, instanceId) {
-            if (data.length == 0) {
-              delete v.instanceCache[instanceId];
-              delete v.selections[instanceId];
+          _.each(v.exitingInstanceIds, function (instanceId) {
+            // delete v.instanceCache[instanceId];
+            delete v.selections[instanceId];
+            delete v.idLookup[instanceId];
+            delete v.indexLookup[instanceId];
+            delete v.parentInstanceLookup[instanceId];
+          });
+        },
+        clearExitedChildInstanceData : function () {
+          var v = this;
+          var ctx = this.ctx;
+          _.each(v.children, function (childId) {
+            var childNode = ctx.v.lookup(childId);
+            while (childNode.exitingInstanceIds.length) {
+              var instanceId = childNode.exitingInstanceIds.pop();
+              delete v.childInstanceData[instanceId];
             }
           });
         },
@@ -481,7 +509,7 @@ define(['jquery', 'underscore', 'd3'],
           });
           return target;
         },
-        refreshInstanceCache : function (instanceId) {
+        refreshInstanceCache : function () {
           var v = this;
           var ctx = v.ctx;
 
@@ -491,42 +519,46 @@ define(['jquery', 'underscore', 'd3'],
           // next, re-populate it
           // the dynamic attributes will be the same for all instances of this node, so calculate them once:
           var dynamicAttributes = v.extendTemporalData(true, null, [], v.staticAttributes, v.dynamicAttributes);
+          var parentNode = ctx.v.lookup(v.parent);
+          var dereferenceDataAndStoreToParent = function (instanceId, instanceIndex) {
+            var instanceTemporalData = v.extendTemporalData(true, instanceId, [], dynamicAttributes, v.superDynamicAttributes);
+            parentNode.childInstanceData[instanceId] = {
+              tag: v.tag,
+              id: instanceId,
+              kind: v.id,
+              index: instanceIndex,
+              temporalData: instanceTemporalData
+            };
+          };
 
           // fixed node
           if (!v.on) {
+
             // for a fixed node, the instance index will be the same for all instances
-            var parentNode = ctx.v.lookup(v.parent);
             var instanceIndex = parentNode.children.indexOf(v.id);
-            _.each(v.instanceLookup, function (instance, parentInstanceId) {
-              var instanceId = instance;
-              var instanceTemporalData = v.extendTemporalData(true, instanceId, [], dynamicAttributes, v.superDynamicAttributes);
-               var instanceData = {
-                 tag: v.tag,
-                 id: instanceId,
-                 kind: v.id,
-                 index: instanceIndex,
-                 temporalData: instanceTemporalData
-               };
-               v.instanceCache[parentInstanceId] = [instanceData];
+            _.each(v.instanceLookup, function (instanceId, parentInstanceId) {
+              v.instanceCache[parentInstanceId] = [instanceId];
+              dereferenceDataAndStoreToParent(instanceId, instanceIndex);
             });
+            _.each(v.exitingInstanceIds, function (instanceId) {
+              dereferenceDataAndStoreToParent(instanceId, instanceIndex);
+            });
+
           // conditional node
           } else {
             _.each(v.instanceLookup, function (instance, parentInstanceId) {
               var data = [];
               _.each(instance, function (instanceId, conditionalId) {
                 var instanceIndex = v.indexLookup[instanceId][v.id];
-                var instanceTemporalData = v.extendTemporalData(true, instanceId, [], dynamicAttributes, v.superDynamicAttributes);
-                 var instanceData = {
-                   tag: v.tag,
-                   id: instanceId,
-                   kind: v.id,
-                   index: instanceIndex,
-                   temporalData: instanceTemporalData
-                 };
-                 data.push(instanceData);
+                dereferenceDataAndStoreToParent(instanceId, instanceIndex);
+                data.push(instanceId);
               });
-               v.instanceCache[parentInstanceId] = data;
+              v.instanceCache[parentInstanceId] = data;
             });
+            _.each(v.exitingInstanceIds, function (instanceId) {
+              var instanceIndex = v.indexLookup[instanceId][v.id];
+              dereferenceDataAndStoreToParent(instanceId, instanceIndex);
+            })
           }
         },
         getParentInstances : function () {
@@ -553,18 +585,20 @@ define(['jquery', 'underscore', 'd3'],
 
           _.each(v.selections, function (selection) {
             var enter = selection.enter().append(function (d, i) {
-              if (d.tag === 'svg') {
+              var instanceData = v.childInstanceData[d];
+              if (instanceData.tag === 'svg') {
                 // TODO: handle all name spaces
                 var element = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-              } else if (d.tag === 'path') {
+              } else if (instanceData.tag === 'path') {
                 var element = document.createElementNS('http://www.w3.org/2000/svg', 'path');
               } else {
-                var element = document.createElement(d.tag);
+                var element = document.createElement(instanceData.tag);
               }
-// TODO: prevent a duplicate element from entering briefly when the element exits
-// console.log('entering ' + d.id);
-              element.id = d.id;
-              element.setAttribute('kind', d.kind);
+
+              // TODO: prevent a duplicate element from entering briefly when the element exits
+              // console.log('entering ' + instanceData.id);
+              element.id = instanceData.id;
+              element.setAttribute('kind', instanceData.kind);
               return element;
             });
             enter = v.instant(enter, cc.DN_ENTER);
@@ -616,7 +650,8 @@ define(['jquery', 'underscore', 'd3'],
 
           selection.each(function (d, i) {
             var node = d3.select(this);
-            var temporalData = d.temporalData;
+            var instanceData = v.childInstanceData[d];
+            var temporalData = instanceData.temporalData;
 
             if (temporalData && temporalData[phase] && temporalData[phase][subphase]) {
               // transition
@@ -642,8 +677,8 @@ define(['jquery', 'underscore', 'd3'],
                     _.each(methods, function (method, methodIndex) {
                       var evaluatedArgs = [];
                       _.each(method[cc.DN_H_ARGS], function (arg) {
-                        var childViewNode = ctx.v.lookup(d.kind);
-                        evaluatedArgs.push(childViewNode.evaluateValue(true, d.id, arg));
+                        var childViewNode = ctx.v.lookup(instanceData.kind);
+                        evaluatedArgs.push(childViewNode.evaluateValue(true, d, arg));
                       });
                       ctx.execute(method[cc.DN_H_METHOD], evaluatedArgs);
                     });

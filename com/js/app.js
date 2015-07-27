@@ -9,14 +9,14 @@ requirejs.config({
     jquery: '../lib/jquery',
     d3: '../lib/d3'
   },
-    shim: {
-      underscore: {
-          exports: '_'
-      },
-      d3: {
-          exports: 'd3'
-      }
+  shim: {
+    underscore: {
+      exports: '_'
+    },
+    d3: {
+      exports: 'd3'
     }
+  }
 });
 
 requirejs(['underscore', 'polytree/Context'],
@@ -117,7 +117,7 @@ requirejs(['underscore', 'polytree/Context'],
             ctx.setState('windowDimensions', {
               height: $rootNode.innerHeight(),
               width: $rootNode.innerWidth()
-            });  
+            });
             ctx.execute('waitRender', [600, 'resize']);
           }
         },
@@ -733,10 +733,10 @@ requirejs(['underscore', 'polytree/Context'],
             kind: "h1",
             text: "EXAMPLES"
           },
-          {
-            kind: 'p',
-            text: 'coming soon'
-          }]
+            {
+              kind: 'p',
+              text: 'coming soon'
+            }]
         },
 
         // VARIABLES
@@ -1586,7 +1586,7 @@ requirejs(['underscore', 'polytree/Context'],
                 'border-width': ['d', 'scaledBorderWidthPx'],
                 'font-family': ['i', 'sansFontStack'],
                 'margin-top': ['d', 'tripleGutterPx'],
-                
+
               }
             },
             update: {
@@ -1640,7 +1640,7 @@ requirejs(['underscore', 'polytree/Context'],
               }
             }
           },
-          
+
         },
         {
           id: 'linkText',
@@ -1889,5 +1889,5 @@ requirejs(['underscore', 'polytree/Context'],
     });
     ctx.configure(config);
 
-  ctx.execute('initialize');
-});
+    ctx.execute('initialize');
+  });
