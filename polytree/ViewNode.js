@@ -723,6 +723,8 @@ define(['jquery', 'underscore', 'd3'],
               if (phase == cc.DN_EXIT && subphase == cc.DN_TRANSITION) {
                 node = node.remove();
               }
+            } else if (phase == cc.DN_EXIT && subphase == cc.DN_TRANSITION) {
+              node = node.remove()
             }
           });
           return selection;
