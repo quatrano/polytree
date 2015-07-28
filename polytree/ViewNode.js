@@ -161,15 +161,14 @@ define(['jquery', 'underscore', 'd3'],
           }
         },
         getData : function (parentInstanceId) {
-           var v = this;
-           var ctx = v.ctx;
-           if (!v.instanceCache) {
-             // the instance cache was invalidated, recalculate
-             v.reinstantiate();
-             v.refreshInstanceCache();
-           }
-           return v.instanceCache[parentInstanceId];
-         },
+          var v = this;
+          if (!v.instanceCache) {
+            // the instance cache was invalidated, recalculate
+            v.reinstantiate();
+            v.refreshInstanceCache();
+          }
+          return v.instanceCache[parentInstanceId];
+        },
         select : function (instanceId) {
           var instanceSelector = '#' + instanceId;
           var childSelector = instanceSelector + '>*';
@@ -219,7 +218,7 @@ define(['jquery', 'underscore', 'd3'],
         },
         reinstantiate : function () {
           var v = this;
-          
+
           var conditionalInstancesChanged = false;
 
           // check if parent instances have changed
@@ -239,14 +238,14 @@ define(['jquery', 'underscore', 'd3'],
               }
               var updatingConditionals = _.intersection(conditionalInstances, existingConditionalInstances);
               _.each(updatingConditionals, function (conditionalId) {
-                  var conditionalIndex = conditionalInstances.indexOf(conditionalId);
-                  v.updateInstance(parentInstanceId, conditionalId, conditionalIndex);
-                });
+                var conditionalIndex = conditionalInstances.indexOf(conditionalId);
+                v.updateInstance(parentInstanceId, conditionalId, conditionalIndex);
+              });
 
               if (conditionalInstancesChanged) {
                 var enteringConditionals = _.difference(conditionalInstances, existingConditionalInstances);
                 var exitingConditionals = _.difference(existingConditionalInstances, conditionalInstances);
-                
+
                 _.each(enteringConditionals, function (conditionalId) {
                   var conditionalIndex = conditionalInstances.indexOf(conditionalId);
                   v.createInstance(parentInstanceId, conditionalId, conditionalIndex);
@@ -458,7 +457,7 @@ define(['jquery', 'underscore', 'd3'],
                 var result = instanceId;
               }
             }
-            
+
             return result;
           } else {
             return value;
@@ -478,8 +477,8 @@ define(['jquery', 'underscore', 'd3'],
                   _.each(subphase, function (facet, facetKey) {
                     if (!target[phaseKey][subphaseKey]) target[phaseKey][subphaseKey] = {};
                     // text, delay, duration (don't go deeper)
-                    if (facetKey === cc.DN_TEXT || 
-                      facetKey === cc.DN_DELAY || 
+                    if (facetKey === cc.DN_TEXT ||
+                      facetKey === cc.DN_DELAY ||
                       facetKey === cc.DN_DURATION) {
                       target[phaseKey][subphaseKey][facetKey] = v.evaluateValue(toEvaluate, instanceId, facet);
                     // style, attribute, property (go one level deeper)
@@ -650,8 +649,10 @@ define(['jquery', 'underscore', 'd3'],
 
           selection.each(function (d, i) {
             var node = d3.select(this);
+
+            // TODO: why is instanceData sometimes undefined?
             var instanceData = v.childInstanceData[d];
-            var temporalData = instanceData.temporalData;
+            var temporalData = instanceData ? instanceData.temporalData : undefined;
 
             if (temporalData && temporalData[phase] && temporalData[phase][subphase]) {
               // transition
@@ -719,7 +720,7 @@ define(['jquery', 'underscore', 'd3'],
               }
 
               // remove
-              if (phase == cc.DN_EXIT) {
+              if (phase == cc.DN_EXIT && subphase == cc.DN_TRANSITION) {
                 node = node.remove();
               }
             }
@@ -738,7 +739,7 @@ define(['jquery', 'underscore', 'd3'],
           v.dependencyCache[watcher[2]] = value;
           v.clearInstanceCache();
           ctx.v.registerDirtyNodes([v.parent]);
-         }
+        }
       }
     };
   }
