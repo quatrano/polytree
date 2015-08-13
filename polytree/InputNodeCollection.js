@@ -1,6 +1,6 @@
 // Input Node Collection Dependencies
-define(['polytree/InputNode'],
-function (InputNode) {
+define(['underscore', 'polytree/InputNode'],
+function (_, InputNode) {
 return {
 
 // Input Node Collection Builder

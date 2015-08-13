@@ -3,13 +3,13 @@ html, body {
   position: relative;
   margin: 0px;
   padding: 0px;
-  overflow: scroll;
+  overflow: hidden;
   font-size: 62.5%;
 }
 
 #d_root {
   height: 100%;
   width: 100%;
-  overflow: scroll;
+  overflow: hidden;
   position: relative;
 }

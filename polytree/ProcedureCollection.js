@@ -1,6 +1,6 @@
 // Procedure Collection Dependencies
-define(['polytree/Procedure'],
-function (Procedure) {
+define(['underscore', 'polytree/Procedure'],
+function (_, Procedure) {
 return {
 
 // Procedure Collection Builder

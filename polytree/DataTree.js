@@ -1,6 +1,6 @@
 // Data Tree Dependencies
-define(['polytree/DataNode'],
-function (DataNode) {
+define(['underscore', 'polytree/DataNode'],
+function (_, DataNode) {
 return {
 
 // Data Tree Builder

@@ -1,6 +1,6 @@
 // Input Node Dependencies
-define([],
-function () {
+define(['underscore'],
+function (_) {
 return {
 
 // Input Node Builder

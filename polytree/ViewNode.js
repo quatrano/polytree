@@ -2,8 +2,8 @@
  * Distal Node
  */
 
-define(['jquery', 'underscore', 'd3'],
-  function ($, _, d3) {
+define(['underscore', 'jquery', 'd3'],
+  function (_, $, d3) {
     return {
       create : function (id) {
         var proto = this.proto;

@@ -1,6 +1,16 @@
 // Context Dependencies
-define(['jquery', 'polytree/ProcedureCollection', 'polytree/TransformationCollection', 'polytree/InputNodeCollection', 'polytree/DataTree', 'polytree/ViewTree'],
-function ($, ProcedureCollection, TransformationCollection, InputNodeCollection, DataTree, ViewTree) {
+define([
+  'underscore',
+  'jquery',
+
+  'polytree/ProcedureCollection',
+  'polytree/TransformationCollection',
+  'polytree/InputNodeCollection',
+  'polytree/DataTree',
+  'polytree/ViewTree'
+],
+function (_, $,
+          ProcedureCollection, TransformationCollection, InputNodeCollection, DataTree, ViewTree) {
 return {
 
 // Context Builder

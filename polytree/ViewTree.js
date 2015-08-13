@@ -1,6 +1,6 @@
 // View Tree Dependencies
-define(['jquery', 'underscore', 'polytree/ViewNode'],
-function ($, _, ViewNode) {
+define(['underscore', 'jquery', 'polytree/ViewNode'],
+function (_, $, ViewNode) {
 return {
 
 // View Tree Builder
