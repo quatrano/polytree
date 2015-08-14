@@ -1567,9 +1567,9 @@ requirejs(['underscore', 'polytree/Context'],
               }
             }
           },
-          text: {
+          html: {
             enter: {
-              instant: 'POLYTREE | JS'
+              instant: 'POLYTREE | JS <span/>'
             }
           },
           style: {

@@ -476,8 +476,13 @@ define(['underscore', 'jquery', 'd3'],
                   if (!target[phaseKey]) target[phaseKey] = [];
                   _.each(subphase, function (facet, facetKey) {
                     if (!target[phaseKey][subphaseKey]) target[phaseKey][subphaseKey] = {};
+                    // html, delay, duration (don't go deeper)
+                    if (facetKey === cc.DN_HTML ||
+                      facetKey === cc.DN_DELAY ||
+                      facetKey === cc.DN_DURATION) {
+                      target[phaseKey][subphaseKey][facetKey] = v.evaluateValue(toEvaluate, instanceId, facet);
                     // text, delay, duration (don't go deeper)
-                    if (facetKey === cc.DN_TEXT ||
+                    } else if (facetKey === cc.DN_TEXT ||
                       facetKey === cc.DN_DELAY ||
                       facetKey === cc.DN_DURATION) {
                       target[phaseKey][subphaseKey][facetKey] = v.evaluateValue(toEvaluate, instanceId, facet);
@@ -662,6 +667,12 @@ define(['underscore', 'jquery', 'd3'],
                 node = node.transition();
                 node.duration(temporalData[phase][subphase][cc.DN_DURATION]);
                 node.delay(temporalData[phase][subphase][cc.DN_DELAY]);
+              }
+
+              // html
+              var html = temporalData[phase][subphase][cc.DN_HTML];
+              if (html) {
+                node.html(html);
               }
 
               // text

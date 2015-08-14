@@ -60,6 +60,7 @@ proto : {
       DN_DEP: null,
       DN_ENTER: 'enter',
         DN_INSTANT: 'instant',
+          DN_HTML: 'html',
           DN_TEXT: 'text',
           DN_HANDLE: 'handle',
             DN_H_METHOD: 'method',
@@ -106,6 +107,7 @@ proto : {
       DN_STATIC_ATTR: 5,
         DN_ENTER: 0,
           DN_INSTANT: 0,
+            DN_HTML: 'm',
             DN_TEXT: 't',
             DN_HANDLE: 'h',
               DN_H_METHOD: 0,
@@ -382,6 +384,15 @@ proto : {
             } else {
                 dn[cc.DN_STATIC_ATTR][cc[phaseKey]][cc[subphaseKey]][cc.DN_DELAY] = 0;
               }
+          }
+
+          // html
+          if (outputNode[pc.DN_HTML] && 
+            outputNode[pc.DN_HTML][pc[phaseKey]] && 
+            outputNode[pc.DN_HTML][pc[phaseKey]][pc[subphaseKey]]) {
+            // there can only be one html per sub-phase
+            var html = ctx.extractDependencies(outputNode[pc.DN_HTML][pc[phaseKey]][pc[subphaseKey]], dependencyLookup, dependencies);
+            dn[html.dynamism][cc[phaseKey]][cc[subphaseKey]][cc.DN_HTML] = html.result;
           }
 
           // text
