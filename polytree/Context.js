@@ -158,17 +158,13 @@ proto : {
   },
 
   // set the value of an input node
-  // if no options object is passed, do not digest
-  setState : function (id, value, options) {
+  setState : function (id, value) {
     var ctx = this;
     var cc = ctx.configConstants;
     var obj = [];
     obj[cc.PN_ID] = id;
     obj[cc.PN_VALUE] = value;
     ctx.i.configureOrCreate(obj);
-    if (options && !options.silent) {
-      this.digest();
-    }
   },
 
   digest : function () {
@@ -191,12 +187,8 @@ proto : {
   },
 
   // execute a method
-  // if no options object is passed, do digest
-  execute : function (id, arguments, options) {
+  execute : function (id, arguments) {
     this.p.execute(id, arguments);
-    if (!options || !options.silent) {
-      this.digest();
-    }
   },
 
   dispatch : function (event) {

@@ -118,16 +118,16 @@ requirejs(['underscore', 'polytree/Context'],
               height: $rootNode.innerHeight(),
               width: $rootNode.innerWidth()
             });
-            ctx.execute('waitRender', [600, 'resize']);
+            ctx.execute('waitDigest', [600, 'resize']);
           }
         },
         {
-          id: 'waitRender',
+          id: 'waitDigest',
           fn: function (delay, key) {
             var ctx = this;
             window.clearTimeout(ctx.getState(key));
             var timeout = window.setTimeout(function () {
-              ctx.render();
+              ctx.digest();
             }, delay);
             ctx.setState(key, timeout);
           }
@@ -136,7 +136,7 @@ requirejs(['underscore', 'polytree/Context'],
           id: 'captureHash',
           fn: function () {
             ctx.setState('location', window.location);
-            ctx.render();
+            ctx.digest();
           }
         },
         {
