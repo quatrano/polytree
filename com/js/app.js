@@ -1105,6 +1105,7 @@ requirejs(['underscore', 'polytree/Context'],
       viewNodes : [
         {
           id: 'root',
+          ns: 'html',
           tag: 'div',
           style: {
             enter: {
@@ -1121,6 +1122,7 @@ requirejs(['underscore', 'polytree/Context'],
         // LOADING
         {
           id: 'loading',
+          ns: 'html',
           tag: 'div',
           parent: 'root',
           on: ['d', 'loading'],

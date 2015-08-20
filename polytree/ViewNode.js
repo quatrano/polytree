@@ -4,6 +4,13 @@
 
 define(['underscore', 'jquery', 'd3'],
   function (_, $, d3) {
+
+    var NAMESPACE_URIS = {
+      html: 'http://www.w3.org/1999/xhtml',
+      svg: 'http://www.w3.org/2000/svg',
+      xbl: 'http://www.mozilla.org/xbl',
+      xul: 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul'
+    };
     return {
       create : function (id) {
         var proto = this.proto;
@@ -75,11 +82,15 @@ define(['underscore', 'jquery', 'd3'],
           var v = this;
           var ctx = v.ctx;
           var cc = ctx.configConstants;
+
+          // ns
+          this.ns = obj[cc.DN_NS];
+
           // tag
           this.tag = obj[cc.DN_TAG];
 
           // type
-          this.on = obj[cc.DN_ON]
+          this.on = obj[cc.DN_ON];
 
           // parent
           if (obj[cc.DN_PARENT]) {
@@ -194,6 +205,7 @@ define(['underscore', 'jquery', 'd3'],
           var instanceTemporalData = v.extendTemporalData(true, instanceId, [], v.staticAttributes, v.dynamicAttributes);
           v.childInstanceData[instanceId] = {
             tag: v.tag,
+            ns: v.ns,
             id: instanceId,
             kind: v.id,
             index: 0,
@@ -205,7 +217,13 @@ define(['underscore', 'jquery', 'd3'],
           var selection = d3.select(parentSelector).selectAll(rootSelector);
           selection = selection.data([instanceId]);
           var enter = selection.enter().append(function (d, i) {
-            var element = document.createElement(v.tag);
+            var element;
+            var nsUri = NAMESPACE_URIS[v.ns];
+            if (nsUri) {
+              element = document.createElementNS(nsUri, v.tag);
+            } else {
+              element = document.createElement(v.tag);
+            }
             element.id = instanceId;
             return element;
           });
@@ -527,6 +545,7 @@ define(['underscore', 'jquery', 'd3'],
           var dereferenceDataAndStoreToParent = function (instanceId, instanceIndex) {
             var instanceTemporalData = v.extendTemporalData(true, instanceId, [], dynamicAttributes, v.superDynamicAttributes);
             parentNode.childInstanceData[instanceId] = {
+              ns: v.ns,
               tag: v.tag,
               id: instanceId,
               kind: v.id,
@@ -590,13 +609,12 @@ define(['underscore', 'jquery', 'd3'],
           _.each(v.selections, function (selection) {
             var enter = selection.enter().append(function (d, i) {
               var instanceData = v.childInstanceData[d];
-              if (instanceData.tag === 'svg') {
-                // TODO: handle all name spaces
-                var element = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-              } else if (instanceData.tag === 'path') {
-                var element = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+              var element;
+              var nsUri = NAMESPACE_URIS[instanceData.ns];
+              if (nsUri) {
+                element = document.createElementNS(nsUri, instanceData.tag);
               } else {
-                var element = document.createElement(instanceData.tag);
+                element = document.createElement(instanceData.tag);
               }
 
               // TODO: prevent a duplicate element from entering briefly when the element exits

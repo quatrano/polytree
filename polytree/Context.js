@@ -54,6 +54,7 @@ proto : {
       MN_DEP: null,
     DISTAL_NODES: 'viewNodes',
       DN_ID: 'id',
+      DN_NS: 'ns',
       DN_TAG: 'tag',
       DN_ON: 'on',
       DN_PARENT: 'parent',
@@ -100,11 +101,12 @@ proto : {
       MN_DEP: 3,
     DISTAL_NODES: 4,
       DN_ID: 0,
-      DN_TAG: 1,
-      DN_ON: 2,
-      DN_PARENT: 3,
-      DN_DEP: 4,
-      DN_STATIC_ATTR: 5,
+      DN_NS: 1,
+      DN_TAG: 2,
+      DN_ON: 3,
+      DN_PARENT: 4,
+      DN_DEP: 5,
+      DN_STATIC_ATTR: 6,
         DN_ENTER: 0,
           DN_INSTANT: 0,
             DN_HTML: 'm',
@@ -124,8 +126,8 @@ proto : {
             DN_DURATION: 'd',
         DN_UPDATE: 1,
         DN_EXIT: 2,
-      DN_DYNAMIC_ATTR: 6,
-      DN_SUPERDYNAMIC_ATTR:7
+      DN_DYNAMIC_ATTR: 7,
+      DN_SUPERDYNAMIC_ATTR: 8
   },
 
   initialize : function () {
@@ -322,6 +324,7 @@ proto : {
     _.each(project[pc.DISTAL_NODES], function (outputNode) {
       var dn = [];
       dn[cc.DN_ID] = outputNode[pc.DN_ID];
+      dn[cc.DN_NS] = outputNode[pc.DN_NS];
       dn[cc.DN_TAG] = outputNode[pc.DN_TAG];
       dn[cc.DN_PARENT] = outputNode[pc.DN_PARENT];
       var dependencies = [];
