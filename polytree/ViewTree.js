@@ -98,7 +98,7 @@ proto : {
       this.dirtyNodes = _.chain(this.dirtyNodes)
         .uniq()
         .sortBy(function (id) {
-          return -collection.nodeIndex[id];
+          return collection.nodeIndex[id];
         })
         .value();
       var nodeId = collection.dirtyNodes.shift();
