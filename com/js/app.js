@@ -1852,6 +1852,17 @@ requirejs(['underscore', 'polytree/Context'],
               }
             }
           },
+          //handle: {
+            // Testing issue #19
+            //exit: {
+            //  transition: {
+            //    always: [{
+            //      method: 'log',
+            //      arguments: [[['#']], [['id', 'examples']], 'testing issue ']
+            //    }]
+            //  }
+            //}
+          //},
           duration: {
             exit: 100
           },
@@ -1886,7 +1897,7 @@ requirejs(['underscore', 'polytree/Context'],
               }
             }
           }
-        },
+        }
       ]
     });
     ctx.configure(config);

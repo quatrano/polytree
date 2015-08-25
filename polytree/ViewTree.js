@@ -82,10 +82,7 @@ proto : {
       node.refresh();
     });
     // TODO: remove from dirty nodes list to prevent extra cycles?
-    if (idArr.length > 0) {
-      idArr.unshift(collection.dirtyNodes);
-      collection.dirtyNodes = _.without.apply(collection, idArr);
-    }
+    // make all nodes refresh through the dirty list mechanism
   },
 
   refresh : function () {
@@ -101,7 +98,7 @@ proto : {
       this.dirtyNodes = _.chain(this.dirtyNodes)
         .uniq()
         .sortBy(function (id) {
-          return collection.nodeIndex[id];
+          return -collection.nodeIndex[id];
         })
         .value();
       var nodeId = collection.dirtyNodes.shift();

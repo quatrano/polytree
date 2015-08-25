@@ -1,8 +1,12 @@
 /**
- * Distal Node
+ * View Node
  */
 
-define(['underscore', 'jquery', 'd3'],
+define([
+  'underscore',
+  'jquery',
+  'd3'
+],
   function (_, $, d3) {
 
     var NAMESPACE_URIS = {
@@ -11,6 +15,7 @@ define(['underscore', 'jquery', 'd3'],
       xbl: 'http://www.mozilla.org/xbl',
       xul: 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul'
     };
+
     return {
       create : function (id) {
         var proto = this.proto;
@@ -130,11 +135,13 @@ define(['underscore', 'jquery', 'd3'],
           v.update();
           if (v.instancesChanged || v.childInstancesChanged()) {
             v.enter();
-            ctx.v.refreshAll(_.clone(v.children));
+            var children = _.clone(v.children);
+            _.each(children, function (child) {
+              ctx.v.lookup(child).instancesChanged = true;
+            });
+            ctx.v.refreshAll(children);
             v.exit();
             v.instancesChanged = false;
-            v.clearExitedInstanceData();
-            v.clearExitedChildInstanceData();
           }
           v.order();
         },
@@ -428,7 +435,7 @@ define(['underscore', 'jquery', 'd3'],
                   // get the index of a ancestor instance
                   addressPart = instanceIndexLookup[addressPart[1]];
                 } else if (addressPart[0] == 'id') {
-                  // get the conditional id 
+                  // get the conditional id
                   addressPart = instanceIdLookup[addressPart[1]];
                 }
               }
@@ -456,7 +463,7 @@ define(['underscore', 'jquery', 'd3'],
                       // get the index of a ancestor instance
                       addressPart = v.indexLookup[instanceId][addressPart[1]];
                     } else if (addressPart[0] == 'id') {
-                      // get the conditional id 
+                      // get the conditional id
                       addressPart = v.idLookup[instanceId][addressPart[1]];
                     }
                   }
@@ -469,7 +476,7 @@ define(['underscore', 'jquery', 'd3'],
                 // get the index of a ancestor instance
                 var result = v.indexLookup[instanceId][value[0][1]];
               } else if (value[0][0] == 'id') {
-                // get the conditional id 
+                // get the conditional id
                 var result = v.idLookup[instanceId][value[0][1]];
               } else if (value[0][0] == '#') {
                 var result = instanceId;
@@ -635,8 +642,10 @@ define(['underscore', 'jquery', 'd3'],
           _.each(this.selections, function (selection) {
             var exit = selection.exit();
             exit = v.instant(exit, cc.DN_EXIT);
-            exit = v.transition(exit, cc.DN_EXIT);
-            //exit = exit.remove();
+            exit = v.transition(exit, cc.DN_EXIT, function () {
+              v.clearExitedInstanceData();
+              v.clearExitedChildInstanceData();
+            });
           });
         },
         order : function () {
@@ -656,19 +665,23 @@ define(['underscore', 'jquery', 'd3'],
           instant = v.apply(instant, phase, cc.DN_INSTANT);
           return instant;
         },
-        transition : function (selection, phase) {
+        transition : function (selection, phase, callback) {
           var v = this;
           var ctx = v.ctx;
           var cc = ctx.configConstants;
 
-          var transition = selection;
-          transition = v.apply(transition, phase, cc.DN_TRANSITION);
+          var transition = selection.transition();
+          transition = v.apply(transition, phase, cc.DN_TRANSITION, callback);
           return transition;
         },
-        apply : function (selection, phase, subphase) {
+        apply : function (selection, phase, subphase, callback) {
           var v = this;
           var ctx = v.ctx;
           var cc = ctx.configConstants;
+
+          // track the number of complete transitions
+          // when this number reaches selection.length, all transitions are complete
+          var completeTransitions = 0;
 
           selection.each(function (d, i) {
             var node = d3.select(this);
@@ -680,8 +693,6 @@ define(['underscore', 'jquery', 'd3'],
             if (temporalData && temporalData[phase] && temporalData[phase][subphase]) {
               // transition
               if (subphase == cc.DN_TRANSITION) {
-                // cancel any previous transition?
-                // node.transition().duration(0);
                 node = node.transition();
                 node.duration(temporalData[phase][subphase][cc.DN_DURATION]);
                 node.delay(temporalData[phase][subphase][cc.DN_DELAY]);
@@ -750,7 +761,12 @@ define(['underscore', 'jquery', 'd3'],
 
               // remove
               if (phase == cc.DN_EXIT && subphase == cc.DN_TRANSITION) {
-                node = node.remove();
+                var transitionComplete = function () {
+                  if (_.isFunction(callback) && ++completeTransitions === selection.length) {
+                    callback();
+                  }
+                };
+                node.each('end', transitionComplete).remove();
               }
             } else if (phase == cc.DN_EXIT && subphase == cc.DN_TRANSITION) {
               node = node.remove()
