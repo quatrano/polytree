@@ -1,4 +1,4 @@
-![Polytree](polytreejs_400px.png)
+![Polytree](polytree.png)
 
 **Polytree** is a paradigm for building web applications.  Polytree is composed of a templating language driven by [D3](http://d3js.org/) and a data-flow language, which together make a badass framework.
 
