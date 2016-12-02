@@ -1,16 +1,29 @@
 ![Polytree](polytree.png)
 
-**Polytree** is a paradigm for building web applications.  Polytree is composed of a templating language driven by [D3](http://d3js.org/) and a data-flow language, which together make a badass framework.
+This is the home of the **Polytree Framework**
 
-If you want to read more, check out the [wiki](https://github.com/quatrano/polytree/wiki).
+If you want to read about the framework check out the [wiki](https://github.com/quatrano/polytree/wiki).
 
+###setup
 install node js
-install gulp cli globally
-	sudo npm install --global gulp-cli
-install deps
-	npm install from the base dir
+install gulp cli globally by running the following line
+```bash
+sudo npm install --global gulp-cli
+```
+download npm dependencies by running the follwing line from the base dir
+```bash
+npm install
+```
 
-for the dev loop, run:
-	gulp dev
-to build:
-	gulp prod
+###to run the dev loop
+from the base dir run the following line
+```bash
+gulp dev
+```
+###to build for production
+from the base dir run the following line
+and look in the `dist` directory for build output
+```bash
+gulp prod
+```
+
