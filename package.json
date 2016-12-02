@@ -1,17 +1,58 @@
 {
   "name": "polytree",
-  "version": "0.1.0",
-  "author" : "quatrano",
-  "description" : "polytree",
+  "version": "2.0.0",
+  "author": "quatrano",
+  "description": "unified theory of dom",
   "private": true,
-  "scripts": {
-    "start": "node server.js"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/quatrano/polytree"
   },
   "dependencies": {
-    "express": "3.3.5"
+    "assert": "^1.3.0",
+    "express": "4.13.3",
+    "sinon": "^1.17.2"
+  },
+  "devDependencies": {
+    "ace": "git://github.com/ajaxorg/ace.git#v1.2.5",
+    "ace-editor-builds": "^1.2.4",
+    "bluebird": "3.3.3",
+    "bower": "1.3.4",
+    "browser-sync": "2.10.1",
+    "d3": "3.5.16",
+    "del": "^2.2.2",
+    "glob": "7.0.3",
+    "grunt": "0.4.5",
+    "grunt-contrib-clean": "0.6.0",
+    "grunt-contrib-copy": "0.7.0",
+    "grunt-contrib-uglify": "0.11.0",
+    "grunt-contrib-watch": "0.6.1",
+    "grunt-mocha-test": "0.12.1",
+    "gulp": "3.9.0",
+    "gulp-batch": "^1.0.5",
+    "gulp-cached": "1.1.0",
+    "gulp-debug": "^2.1.2",
+    "gulp-jshint": "^2.0.0",
+    "gulp-load-plugins": "^1.1.0",
+    "gulp-mocha": "2.2.0",
+    "gulp-remember": "0.3.0",
+    "gulp-rename": "1.2.2",
+    "gulp-uglify": "1.5.1",
+    "gulp-watch": "4.3.5",
+    "hash-files": "^1.1.1",
+    "immutable": "3.7.6",
+    "immutable-devtools": "0.0.7",
+    "jquery": "2.2.3",
+    "jshint": "2.8.0",
+    "jshint-stylish": "2.1.0",
+    "lodash": "4.6.1",
+    "mocha": "1.21.5",
+    "require-dir": "0.3.0",
+    "requirejs": "2.1.22",
+    "rollup": "0.21.2",
+    "should": "^8.0.2",
+    "stream-reduce": "^1.0.3",
+    "webpack-stream": "^3.0.0"
   }
 }

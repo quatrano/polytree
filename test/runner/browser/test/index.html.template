@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>unit tests</title>
+    <link href="<%= baseUrl %>/node_modules/mocha/mocha.css" rel="stylesheet"/>
+  </head>
+  <body>
+    <script src="<%= baseUrl %>/require.js"></script>
+    <script>
+
+      requirejs.config({
+        useStrict: true,
+        baseUrl: '<%= baseUrl %>',
+        shim: {
+          'mocha': {
+            exports: 'mocha'
+          }
+        },
+        paths: {
+          mocha: 'node_modules/mocha/mocha',
+          bluebird: 'node_modules/bluebird/js/browser/bluebird',
+          immutable: 'node_modules/immutable/dist/immutable',
+          'immutable-devtools': 'node_modules/immutable-devtools/dist/index',
+          lodash: 'node_modules/lodash/lodash',
+          should: 'node_modules/should/should',
+          sinon: 'node_modules/sinon/lib/sinon',
+
+          polytree: 'src',
+          resource: 'test/resource'
+        }
+      });
+
+      requirejs([
+        'mocha',
+        'immutable',
+        'immutable-devtools'
+      ], function (mocha, Immutable, installImmutableDevtools) {
+        mocha.setup({
+          ui: 'bdd',
+          timeout: 1000
+        });
+        installImmutableDevtools(Immutable);
+        requirejs([
+          <%= tests %>
+        ], function () {
+          mocha.run();
+        });
+      });
+
+    </script>
+    <div id="mocha"></div>
+  </body>
+</html>
