@@ -2,5 +2,5 @@ node_modules
 logs
 *.log
 data
-.DS_store
+.DS_Store
 dist
